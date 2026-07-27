@@ -160,7 +160,7 @@ export function LandingPage() {
           </div>
 
           <p className="mt-6 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Hitung Mundur Sampai
+            Donasi dibuka hingga tanggal
           </p>
           <h2 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground">
             4 Agustus 2026
@@ -200,7 +200,7 @@ export function LandingPage() {
               Informasi &amp; Konfirmasi
             </p>
             <p className="mt-2 text-2xl font-bold tracking-wide">
-              0812 1006 0215
+              +6281210060215
             </p>
             <p className="mt-1 text-xs opacity-90">( RUNDI DMC )</p>
           </div>
