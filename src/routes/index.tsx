@@ -1,4 +1,5 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import kebakaranImage from "@/assets/kebakaran.webp";
 import logozisImage from "@/assets/logozis.png";
@@ -23,19 +24,6 @@ const donorsQO = queryOptions({
   },
 });
 
-const campaignQO = queryOptions({
-  queryKey: ["campaign_settings"],
-  queryFn: async () => {
-    const { data, error } = await supabase
-      .from("campaign_settings")
-      .select("target_amount")
-      .eq("id", 1)
-      .maybeSingle();
-    if (error) throw error;
-    return { target_amount: Number(data?.target_amount ?? 50000000) };
-  },
-});
-
 const rupiah = (n: number) =>
   new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -50,13 +38,46 @@ const formatDate = (iso: string) =>
     year: "numeric",
   });
 
+function getTimeLeft() {
+  const targetDate = new Date("2026-08-04T23:59:59+07:00");
+  const now = new Date();
+  const diff = targetDate.getTime() - now.getTime();
+
+  if (diff <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  }
+
+  return {
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((diff / (1000 * 60)) % 60),
+    seconds: Math.floor((diff / 1000) % 60),
+  };
+}
+
 export function LandingPage() {
   const { data: donors } = useSuspenseQuery(donorsQO);
-  const { data: campaign } = useSuspenseQuery(campaignQO);
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setTimeLeft(getTimeLeft());
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   const collected = donors.reduce((s, d) => s + Number(d.amount), 0);
-  const target = campaign.target_amount;
-  const pct = Math.min(100, target > 0 ? (collected / target) * 100 : 0);
+
+  const countdownItems = useMemo(
+    () => [
+      { label: "Hari", value: timeLeft.days },
+      { label: "Jam", value: timeLeft.hours },
+      { label: "Menit", value: timeLeft.minutes },
+      { label: "Detik", value: timeLeft.seconds },
+    ],
+    [timeLeft],
+  );
 
   return (
     <div className="min-h-screen">
@@ -119,51 +140,46 @@ export function LandingPage() {
           />
         </figure>
         <figcaption className="mt-3 text-xs text-muted-foreground">
-          Dokumentasi kebakaran di Kampung Adat Kasepuhan Ciptamulya, Sukabumi.
+          Musibah kebakaran telah menimpa saudara-saudara kita di Kampung Adat Kasepuhan Ciptamulya, Kabupaten Sukabumi, pada Sabtu (25/7/2026) yang mengakibatkan sejumlah rumah beserta harta benda hangus terbakar. Berdasarkan informasi sementara, ada 51 rumah hangus terbakar berdampak terhadap 70 keluarga atau sekitar 420 jiwa.
         </figcaption>
       </section>
 
-      {/* Progress */}
+      {/* Countdown */}
       <section className="container-page py-10">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-8">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                Dana Terkumpul
-              </p>
-              <p className="mt-1 text-2xl sm:text-3xl font-bold text-primary">
-                {rupiah(collected)}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                Target
-              </p>
-              <p className="mt-1 text-lg font-semibold text-foreground/80">
-                {rupiah(target)}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-5 h-3 w-full overflow-hidden rounded-full bg-primary-soft">
-            <div
-              className="h-full bg-primary transition-[width] duration-700 ease-out"
-              style={{ width: `${pct}%` }}
-              role="progressbar"
-              aria-valuenow={Math.round(pct)}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            />
-          </div>
-
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
-            <span className="font-medium text-primary">
-              {pct.toFixed(1)}% tercapai
-            </span>
-            <span className="text-muted-foreground">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-8 text-center">
+          <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Total Donasi Terkumpul
+            </p>
+            <p className="mt-2 text-3xl sm:text-4xl font-black text-primary">
+              {rupiah(collected)}
+            </p>
+            <p className="mt-2 text-sm text-muted-foreground">
               {donors.length} donatur telah berkontribusi
-            </span>
+            </p>
           </div>
+
+          <p className="mt-6 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            Hitung Mundur Sampai
+          </p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-bold text-foreground">
+            4 Agustus 2026
+          </h2>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {countdownItems.map((item) => (
+              <div key={item.label} className="rounded-xl border border-border bg-background/80 p-3">
+                <div className="text-2xl sm:text-3xl font-bold text-primary">
+                  {String(item.value).padStart(2, "0")}
+                </div>
+                <div className="mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  {item.label}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-sm text-muted-foreground">
+            Mari bersiap membantu saudara-saudara kita hingga momentum ini tiba.
+          </p>
         </div>
       </section>
 
@@ -281,11 +297,10 @@ export function LandingPage() {
         <div className="container-page py-8 text-center">
           <Logo small />
           <p className="mt-3 text-sm text-foreground/70">
-            Jazakumullahu khairan katsiran atas kepedulian Anda.
+            Semoga setiap bantuan yang diberikan menjadi amal jariyah dan mendapat balasan berlipat ganda dari Allah SWT.
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Forum ZIS Peduli. Semua bantuan
-            disalurkan amanah kepada penerima manfaat.
+            &copy; {new Date().getFullYear()} Forum ZIS Peduli. 
           </p>
         </div>
       </footer>
