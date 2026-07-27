@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import kebakaranImage from "@/assets/kebakaran.webp";
@@ -37,32 +36,6 @@ const campaignQO = queryOptions({
   },
 });
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Open Donasi — Forum ZIS Peduli" },
-      {
-        name: "description",
-        content:
-          "Bantu ringankan beban saudara-saudara kita di Kampung Adat Kasepuhan Ciptamulya, Desa Sirnaresmi, Kabupaten Sukabumi. Salurkan donasi Anda melalui Forum ZIS Peduli.",
-      },
-      { property: "og:title", content: "Open Donasi — Forum ZIS Peduli" },
-      {
-        property: "og:description",
-        content:
-          "Salurkan donasi Anda untuk saudara-saudara kita di Kampung Adat Kasepuhan Ciptamulya, Sukabumi.",
-      },
-    ],
-  }),
-  loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(donorsQO),
-      context.queryClient.ensureQueryData(campaignQO),
-    ]);
-  },
-  component: LandingPage,
-});
-
 const rupiah = (n: number) =>
   new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -91,12 +64,12 @@ export function LandingPage() {
       <header className="border-b border-border/70 bg-background/80 backdrop-blur">
         <div className="container-page flex items-center justify-between py-4">
           <Logo />
-          <Link
-            to="/admin"
+          <a
+            href="/admin"
             className="text-sm text-muted-foreground hover:text-primary transition-colors"
           >
             Login
-          </Link>
+          </a>
         </div>
       </header>
 
