@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import kebakaranImage from "@/assets/kebakaran.webp";
@@ -77,7 +77,7 @@ const formatDate = (iso: string) =>
     year: "numeric",
   });
 
-function LandingPage() {
+export function LandingPage() {
   const { data: donors } = useSuspenseQuery(donorsQO);
   const { data: campaign } = useSuspenseQuery(campaignQO);
 
@@ -320,7 +320,7 @@ function LandingPage() {
   );
 }
 
-function Logo({ small = false }: { small?: boolean }) {
+export function Logo({ small = false }: { small?: boolean }) {
   return (
     <div className={"inline-flex items-center " + (small ? "text-base" : "text-lg")}>
       <img

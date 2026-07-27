@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
@@ -22,7 +22,7 @@ type Donor = {
   donated_at: string;
 };
 
-function AdminPage() {
+export function AdminPage() {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -61,9 +61,9 @@ function AdminPage() {
     <div className="min-h-screen">
       <header className="border-b border-border bg-background/80">
         <div className="container-page flex items-center justify-between py-4">
-          <Link to="/" className="text-sm font-semibold text-primary">
+          <a href="/" className="text-sm font-semibold text-primary">
             ← Kembali ke Beranda
-          </Link>
+          </a>
           <h1 className="text-sm font-semibold text-foreground/80">
             Admin Panel
           </h1>
