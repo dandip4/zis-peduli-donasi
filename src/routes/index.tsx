@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import posterAsset from "@/assets/poster-fire.jpeg.asset.json";
+import kebakaranImage from "@/assets/kebakaran.webp";
+import logozisImage from "@/assets/logozis.png";
 
 type Donor = {
   id: string;
@@ -94,16 +95,20 @@ function LandingPage() {
             to="/admin"
             className="text-sm text-muted-foreground hover:text-primary transition-colors"
           >
-            Admin
+            Login
           </Link>
         </div>
       </header>
 
       {/* Hero */}
       <section className="container-page pt-14 pb-10 text-center">
-        <span className="inline-block rounded-full bg-primary-soft px-4 py-1.5 text-xs font-medium tracking-wide text-primary-dark uppercase">
-          Forum ZIS Peduli
-        </span>
+        <div className="mx-auto mt-6 inline-flex items-center justify-center rounded-2xl ">
+          <img
+            src={logozisImage}
+            alt="Forum ZIS Peduli"
+            className="h-10 w-auto object-contain"
+          />
+        </div>
         <h1 className="mt-6 font-extrabold text-primary leading-[0.95] text-5xl sm:text-6xl md:text-7xl">
           Open Donasi
         </h1>
@@ -134,7 +139,7 @@ function LandingPage() {
         {/* Photo */}
         <figure className="mt-12 mx-auto max-w-4xl overflow-hidden rounded-2xl border border-border shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <img
-            src={posterAsset.url}
+            src={kebakaranImage}
             alt="Kondisi Kampung Adat Kasepuhan Ciptamulya setelah kebakaran"
             className="w-full aspect-[16/9] object-cover"
             style={{ objectPosition: "50% 82%" }}
@@ -317,46 +322,12 @@ function LandingPage() {
 
 function Logo({ small = false }: { small?: boolean }) {
   return (
-    <div
-      className={
-        "inline-flex items-center gap-2 " + (small ? "text-base" : "text-lg")
-      }
-    >
-      <svg
-        viewBox="0 0 40 40"
-        className={small ? "h-7 w-7" : "h-9 w-9"}
-        aria-hidden="true"
-      >
-        <circle
-          cx="20"
-          cy="20"
-          r="18"
-          fill="none"
-          stroke="var(--color-primary)"
-          strokeWidth="2"
-        />
-        <path
-          d="M12 22 C 16 12, 24 12, 28 22 C 24 28, 16 28, 12 22 Z"
-          fill="var(--color-primary)"
-          opacity="0.85"
-        />
-        <text
-          x="20"
-          y="24"
-          textAnchor="middle"
-          fontSize="10"
-          fontWeight="700"
-          fill="white"
-          fontFamily="Poppins, sans-serif"
-        >
-          ZIS
-        </text>
-      </svg>
-      <span className="font-extrabold tracking-tight">
-        <span className="text-foreground">FORUM </span>
-        <span className="text-primary">ZIS </span>
-        <span className="text-primary-dark">PEDULI</span>
-      </span>
+    <div className={"inline-flex items-center " + (small ? "text-base" : "text-lg")}>
+      <img
+        src={logozisImage}
+        alt="Forum ZIS Peduli"
+        className={small ? "h-8 w-auto object-contain" : "h-10 w-auto object-contain"}
+      />
     </div>
   );
 }

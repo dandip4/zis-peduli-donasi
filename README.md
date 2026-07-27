@@ -1,29 +1,109 @@
-# Welcome to your Lovable project
+# Forum ZIS Peduli
 
-This project was built with [Lovable](https://lovable.dev).
+Proyek ini adalah aplikasi donasi berbasis web untuk mempublikasikan kampanye donasi, menampilkan daftar donatur, dan menyediakan panel admin untuk mengelola data donatur serta target kampanye.
 
-## Build with Lovable
+## Ringkasan proyek
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Aplikasi ini dibangun menggunakan:
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- React + TypeScript
+- TanStack Start
+- Tailwind CSS
+- Supabase untuk autentikasi dan database
 
-## Development
+Fitur utama:
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+- Halaman publik untuk menampilkan informasi donasi dan progres terkumpul
+- Daftar donatur yang diambil dari database Supabase
+- Halaman admin untuk login, mengelola donatur, dan mengubah target donasi
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+## Struktur folder penting
+
+- src/routes/ — halaman publik dan admin
+- src/integrations/supabase/ — koneksi dan middleware Supabase
+- src/components/ui/ — komponen UI berbasis shadcn/ui
+- supabase/migrations/ — skema database yang dipakai proyek
+
+## Prasyarat
+
+Pastikan perangkat Anda telah menginstall:
+
+- Node.js 20+ (disarankan)
+- npm
+
+## Cara menjalankan proyek
+
+1. Clone repository dan masuk ke folder proyek
+
+```bash
+git clone <repository-url>
+cd zis-peduli-donasi
+```
+
+2. Install dependency
+
+```bash
+npm install
+```
+
+3. Siapkan file environment
+
+Buat file .env berdasarkan variabel yang dibutuhkan. Contoh minimal:
+
+```env
+SUPABASE_URL="https://<project-ref>.supabase.co"
+SUPABASE_PUBLISHABLE_KEY="<your-anon-key>"
+VITE_SUPABASE_URL="https://<project-ref>.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="<your-anon-key>"
+```
+
+Jika ingin memakai fitur admin yang lebih lengkap di sisi server, tambahkan juga:
+
+```env
+SUPABASE_SERVICE_ROLE_KEY="<your-service-role-key>"
+```
+
+4. Jalankan aplikasi dalam mode development
+
+```bash
 npm run dev
 ```
 
-## Built with
+Aplikasi akan berjalan dan menampilkan URL lokal yang tersedia di terminal, biasanya berupa http://localhost:3000 atau http://localhost:5173.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Build untuk produksi
+
+```bash
+npm run build
+```
+
+## Preview build
+
+```bash
+npm run preview
+```
+
+## Admin panel
+
+Halaman admin tersedia di path `/admin`.
+
+Agar dapat mengakses panel admin, pengguna harus:
+
+- login melalui Supabase Auth
+- memiliki role `admin` pada tabel `user_roles`
+
+## Database
+
+Proyek ini mengandalkan Supabase sebagai backend. Tabel yang dipakai secara umum:
+
+- donors
+- campaign_settings
+- user_roles
+
+Skema migrasi dapat ditemukan di folder supabase/migrations.
+
+## Troubleshooting
+
+- Jika halaman menampilkan error terkait Supabase, pastikan nilai URL dan kunci publik sudah benar di file .env.
+- Jika admin tidak bisa masuk, cek apakah akun sudah memiliki role admin di tabel `user_roles`.
+- Jika dependensi bermasalah, coba hapus folder node_modules lalu jalankan `npm install` ulang.
