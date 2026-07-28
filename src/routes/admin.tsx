@@ -175,7 +175,7 @@ function AdminDashboard() {
       supabase
         .from("donors")
         .select("id, name, amount, message, donated_at")
-        .order("donated_at", { ascending: false }),
+        .order("created_at", { ascending: true }),
       supabase.from("campaign_settings").select("target_amount").eq("id", 1).maybeSingle(),
     ]);
     setDonors((donorsRes.data ?? []) as Donor[]);
