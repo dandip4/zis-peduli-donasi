@@ -18,7 +18,7 @@ const donorsQO = queryOptions({
     const { data, error } = await supabase
       .from("donors")
       .select("id, name, amount, message, donated_at")
-      .order("id", { ascending: true });
+      .order("created_at", { ascending: true });
     if (error) throw error;
     return (data ?? []) as Donor[];
   },
